@@ -19,10 +19,6 @@
 #include "seo.xbm"
 #include "cho.xbm"
 #include "bu.xbm"
-#include "ho.xbm"
-#include "son.xbm"
-// #include "num2.xbm"
-// #include "num3.xbm"
 
 #include <WiFiManager.h>
 
@@ -55,10 +51,6 @@ void init_glyphs() {
   glyphs["서"] = {seo_bits, seo_width, seo_height};
   glyphs["초"] = {cho_bits, cho_width, cho_height};
   glyphs["부"] = {bu_bits, bu_width, bu_height};
-  glyphs["호"] = {ho_bits, ho_width, ho_height};
-  glyphs["선"] = {son_bits, son_width, son_height};
-  // glyphs["2"] = {num2_bits, num2_width, num2_height};
-  // glyphs["3"] = {num3_bits, num3_width, num3_height};
 }
 
 GxEPD2_BW<GxEPD2_420_GDEY042T81, GxEPD2_420::HEIGHT> display =
@@ -280,7 +272,7 @@ void setup() {
   setenv("TZ", "KST-9", 1);
   tzset();
 
-  // // Set up wifi
+  // Set up wifi
   WiFiManager wifi_manager;
 
   if (!wifi_manager.autoConnect("LiveStationMonitorWifiSetup")) {
@@ -357,11 +349,8 @@ void display_arrivals(
     draw_vertical_line(display, display.width() / 2, 5);
     display.setCursor(8, header_start_y);
     display.printf("Line 2");
-    // drawHangul(display, 8, header_start_y - 48, "2호선");
     display.setCursor(display.width() / 2 + 10, header_start_y);
     display.printf("Line 3");
-    // drawHangul(display, display.width() / 2 + 10, header_start_y - 48,
-    // "3호선");
 
     header_height += 6;
     draw_station_arrivals(display, arrival_result, "강남", 10, header_height);
