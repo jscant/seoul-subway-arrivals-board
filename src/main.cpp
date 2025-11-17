@@ -66,7 +66,9 @@ const char* API_URL =
 constexpr size_t MAX_ARRIVALS = 8;
 constexpr size_t JSON_DOC_SIZE = 6144;
 constexpr int32_t LOOP_DELAY_SECONDS = 20;
-constexpr size_t LONGEST_STATION_NAME_LENGTH = 5;
+constexpr size_t LONGEST_STATION_NAME_LENGTH = 2;
+constexpr int OPERATION_START_HOUR = 5;
+constexpr int OPERATION_END_HOUR = 24;
 
 void drawHangul(GxEPD2_BW<GxEPD2_420_GDEY042T81, GxEPD2_420::HEIGHT>& display,
                 int x, int yTop, const String& text) {
@@ -252,7 +254,7 @@ void helloWorld() {
   int16_t tbx, tby;
   uint16_t tbw, tbh;
   display.getTextBounds(HelloWorld, 0, 0, &tbx, &tby, &tbw, &tbh);
-  // center the bounding box by transposition of the origin:
+
   uint16_t x = ((display.width() - tbw) / 2) - tbx;
   uint16_t y = ((display.height() - tbh) / 2) - tby;
   display.setFullWindow();
@@ -269,6 +271,7 @@ void setup() {
   Serial.begin(SERIAL_BAUD);
 
   // Set timezone to Korea (UTC+9)
+  configTime(0, 0, "pool.ntp.org");
   setenv("TZ", "KST-9", 1);
   tzset();
 
@@ -376,6 +379,8 @@ bool is_valid_time(size_t start_hour, size_t end_hour) {
 
   int hour = tm_now.tm_hour;
 
+  print_all("Current hour: ", hour);
+
   return hour >= start_hour && hour < end_hour;
 }
 
@@ -412,7 +417,7 @@ void pause_until_valid(
 }
 
 void loop() {
-  pause_until_valid(display, 6, 21);
+  pause_until_valid(display, OPERATION_START_HOUR, OPERATION_END_HOUR);
 
   const double_t start_time = millis();
   const double_t loop_delay_millis = LOOP_DELAY_SECONDS * 1000;
