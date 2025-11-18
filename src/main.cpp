@@ -294,13 +294,19 @@ void setup() {
 void draw_vertical_line(
     GxEPD2_BW<GxEPD2_420_GDEY042T81, GxEPD2_420::HEIGHT>& display, size_t x,
     size_t y_top = 0, size_t y_bottom_offset = 0) {
+  // display.drawFastVLine(x - 1, y_top, display.height() - y_bottom_offset,
+  //                       GxEPD_BLACK);
   display.drawFastVLine(x, y_top, display.height() - y_bottom_offset,
                         GxEPD_BLACK);
+  // display.drawFastVLine(x + 1, y_top, display.height() - y_bottom_offset,
+  //                       GxEPD_BLACK);
 }
 
 void draw_horizontal_line(
     GxEPD2_BW<GxEPD2_420_GDEY042T81, GxEPD2_420::HEIGHT>& display, size_t y) {
+  // display.drawFastHLine(0, y - 1, display.width(), GxEPD_BLACK);
   display.drawFastHLine(0, y, display.width(), GxEPD_BLACK);
+  // display.drawFastHLine(0, y + 1, display.width(), GxEPD_BLACK);
 }
 
 void draw_station_arrivals(
@@ -344,16 +350,37 @@ void display_arrivals(
   display.firstPage();
   size_t header_height = 68;
   const size_t header_start_y = 50;
+  const size_t first_horizontal_line_y = header_height - 6;
+  const size_t second_horizontal_line_y = 3;
+  const size_t top_panel_midpoint_y =
+      (first_horizontal_line_y + second_horizontal_line_y) / 2;
   do {
     display.fillScreen(GxEPD_WHITE);
     display.setFont(&FreeSans24pt7b);
-    draw_horizontal_line(display, header_height - 6);
-    draw_horizontal_line(display, 3);
+    display.setTextColor(GxEPD_WHITE);
+
+    draw_horizontal_line(display, first_horizontal_line_y);
+    draw_horizontal_line(display, second_horizontal_line_y - 2);
     draw_vertical_line(display, display.width() / 2, 5);
-    display.setCursor(8, header_start_y);
-    display.printf("Line 2");
-    display.setCursor(display.width() / 2 + 10, header_start_y);
-    display.printf("Line 3");
+
+    const size_t offset = 45;
+    display.fillCircle(display.width() / 4 + offset, top_panel_midpoint_y, 22,
+                       GxEPD_BLACK);
+    display.setCursor(display.width() / 4 - 12 + offset, header_start_y - 3);
+    display.printf("2");
+
+    display.fillCircle(3 * display.width() / 4 + offset, top_panel_midpoint_y,
+                       22, GxEPD_BLACK);
+    display.setCursor(3 * display.width() / 4 - 12 + offset,
+                      header_start_y - 3);
+    display.printf("3");
+
+    display.setTextColor(GxEPD_BLACK);
+    display.setCursor(5, header_start_y - 3);
+    display.printf("Line");
+
+    display.setCursor(display.width() / 2 + 5, header_start_y - 3);
+    display.printf("Line");
 
     header_height += 6;
     draw_station_arrivals(display, arrival_result, "강남", 10, header_height);
